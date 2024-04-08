@@ -80,7 +80,6 @@ button:focus-visible {
 }
 
 .home-page {
-  background-color: antiquewhite;
   display: flex;
   justify-content: center;
   flex-direction: column; /* Stack items vertically */
@@ -118,4 +117,25 @@ button:focus-visible {
 .link-sect {
   display: inline-block;
   padding: 20px;
+}
+
+#light {
+  background-color: antiquewhite;
+}
+
+#dark {
+  background-color: #1a1a1a;
+}
+
+#dark .intro, #dark .c1, #dark .c2, #dark .c3{
+  background-color: #38004c;
+  color: #a05555;
+}
+
+.switch {
+  display: flex;
+  width: 100vw;
+  height: 100px;
+  justify-content: center;
+  align-items: center;
 }

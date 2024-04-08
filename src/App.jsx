@@ -1,11 +1,15 @@
 import Message from "./Message";
 import image from "../../personal_image.jpg"
+import { createContext, useState } from "react";
+import ReactSwitch from "react-switch";
+
+export const ThemeContext = createContext(null);
 
 const links = [
-  {title: "Linkedin", content:"https://www.linkedin.com/in/thomas-urdinola/"},
-  {title: "Github" , content: "https://github.com/tomurdi"},
-  {title: "WilderTrace Project" , content: "https://devpost.com/software/wild-stats"},
-  {title: "Spotify", content: "https://open.spotify.com/user/taco_dude123?si=e52c490decfe47fd"}
+  {title: "Linkedin", content:"https://www.linkedin.com/in/thomas-urdinola/", image: "https://cdn.iconscout.com/icon/free/png-256/free-linkedin-162-498418.png"},
+  {title: "Github" , content: "https://github.com/tomurdi", image: "https://cdn.iconscout.com/icon/free/png-512/free-github-1521500-1288242.png?f=webp&w=256"},
+  {title: "WilderTrace Project" , content: "https://devpost.com/software/wild-stats", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2TN6tRGpXFZta5lQt-E-b_UHBse7PwTMcsoLBbtdyEQ&s"},
+  {title: "Spotify", content: "https://open.spotify.com/user/taco_dude123?si=e52c490decfe47fd", image: "https://cdn.iconscout.com/icon/free/png-512/free-spotify-11-432546.png?f=webp&w=256"}
 ]
 
 const projs = [
@@ -22,11 +26,11 @@ function scrollToSection(sectionId) {
   }
 }
 
-function LinkInfo({title, content}) {
+function LinkInfo({title, content, image}) {
   return (
     <div className="link-sect">
       {/* <button className="buttons" onClick={content}>{title}</button> */}
-      <a href={content}>{title}</a>
+      <a href={content}><img src={image} height={200}></img></a>
     </div>
   );
 }
@@ -36,7 +40,7 @@ function Links() {
 
       <div>
         {links.map((element) => (
-          <LinkInfo title={element.title} content={element.content} />
+          <LinkInfo title={element.title} content={element.content} image={element.image} />
             )
           )
         }
@@ -79,18 +83,47 @@ function NavBar() {
         <li className="buttons">
           <button onClick={() => scrollToSection('coolLinks-section')}>Cool Links</button>
         </li>
+        <li className="buttons">
+          <button onClick={() => scrollToSection('heads-or-tails')}>H or T</button>
+        </li>
       </ol>
     </nav>
   );
 }
 
 function App() {
+  const [theme, setTheme] = useState("light");
+  const [side, setSide] = useState(0)
+  const [count, setCount] = useState(0)
+  const [heads, setHeads] = useState(0)
+
+  function handleCoin () {
+    const land = Math.round(Math.random())
+    setSide(land)
+    setCount(count + 1)
+    handleHead(land)
+  }
+
+  function handleHead(arg) {
+    if (arg == 1) {
+      setHeads(heads + 1)
+    }
+  }
+  
+  function handleTheme() {
+    setTheme((curr) => (curr == "light" ? "dark" : "light"))
+  }
+
   return(
-  <div className="home-page">
+  <ThemeContext.Provider value={{theme, handleTheme}}>
+  <div className="home-page" id={theme}>
     <Message></Message>
     <img src={image} alt="Myself" height={300}></img>
+    <div className="switch">
+      <ReactSwitch onChange={handleTheme} checked={theme=="dark"}/>
+    </div>
     <NavBar></NavBar>
-    
+
     <hr />
 
     <div className="intro" id="introduction">
@@ -127,11 +160,20 @@ function App() {
     </div>
 
     <div id="coolLinks-section" className="c1">
-      <h3> links that tell more about me!</h3>
+      <h3> more about me!</h3>
       <Links />
+    </div>
+
+    <div id="heads-or-tails" className="c3">
+      <h3>simple heads or tails generator in case if you're bored :)</h3>
+      <p>{count == 0 ? "the coin hasn't been tossed yet" : side == 1 ? "coin landed on heads" : "coin landed on tails"}</p>
+      <button onClick={handleCoin}>toss coin</button>
+      <p>the coin has been tossed {count} times</p>
+      <p>the coin has landed on heads {heads} times and tails {count - heads} times</p>
     </div>
     
   </div>
+  </ThemeContext.Provider>
   );
 }
 
