@@ -1,7 +1,8 @@
 import Message from "./Message";
 import image from "../../personal_image.jpg"
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import ReactSwitch from "react-switch";
+
 
 export const ThemeContext = createContext(null);
 
@@ -113,6 +114,17 @@ function App() {
   function handleTheme() {
     setTheme((curr) => (curr == "light" ? "dark" : "light"))
   }
+
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+      fetch('http://localhost:8000/api/data')  // Fetch data from FASTAPI backend
+          .then(response => response.json())
+          .then(data => setMessage(data.message))
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+    }, []);
 
   return(
   <ThemeContext.Provider value={{theme, handleTheme}}>
