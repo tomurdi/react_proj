@@ -2,6 +2,7 @@ import Message from "./Message";
 import image from "../../personal_image.jpg"
 import { createContext, useState, useEffect } from "react";
 import ReactSwitch from "react-switch";
+import { addQuestion, getQuestions, renderItems } from "./script";
 
 
 export const ThemeContext = createContext(null);
@@ -87,16 +88,31 @@ function NavBar() {
         <li className="buttons">
           <button onClick={() => scrollToSection('heads-or-tails')}>H or T</button>
         </li>
+        <li className="buttons">
+          <button onClick={() => scrollToSection('ask-me-anything')}>questions</button>
+        </li>
       </ol>
     </nav>
   );
 }
 
+function Questions() {
+  
+}
+
 function App() {
   const [theme, setTheme] = useState("light");
-  const [side, setSide] = useState(0)
-  const [count, setCount] = useState(0)
-  const [heads, setHeads] = useState(0)
+  const [side, setSide] = useState(0);
+  const [count, setCount] = useState(0);
+  const [heads, setHeads] = useState(0);
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
+  const [question, setQuestion] = useState('');
+  const [questions, setQuestions] = useState([]);
+
+  // useEffect(() => {
+  //   renderItems(questions);
+  // },[questions])
 
   function handleCoin () {
     const land = Math.round(Math.random())
@@ -115,16 +131,11 @@ function App() {
     setTheme((curr) => (curr == "light" ? "dark" : "light"))
   }
 
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-      fetch('http://localhost:8000/api/data')  // Fetch data from FASTAPI backend
-          .then(response => response.json())
-          .then(data => setMessage(data.message))
-          .catch(error => {
-              console.error('Error fetching data:', error);
-          });
-    }, []);
+  const handleQuestion = () => {
+    setName(''); // Reset name state to empty string
+    setAge(''); // Reset age state to empty string
+    setQuestion(''); // Reset question state to empty string
+};
 
   return(
   <ThemeContext.Provider value={{theme, handleTheme}}>
@@ -171,7 +182,7 @@ function App() {
       
     </div>
 
-    <div id="coolLinks-section" className="c1">
+    <div id="coolLinks-section" className="c2">
       <h3> more about me!</h3>
       <Links />
     </div>
@@ -182,6 +193,18 @@ function App() {
       <button onClick={handleCoin}>toss coin</button>
       <p>the coin has been tossed {count} times</p>
       <p>the coin has landed on heads {heads} times and tails {count - heads} times</p>
+    </div>
+
+    <div id="ask-me-anything" className="c1">
+      <h2>speak yo mind</h2>
+      <input type="text" value={name} id="name" onChange={(e) => setName(e.target.value)} placeholder="enter name"></input>
+      <input type="number" value={age} id="age" onChange={(e) => setAge(e.target.value)} placeholder="enter age"></input>
+      <input type= "text" value={question} id="question" onChange={(e) => setQuestion(e.target.value)} placeholder="enter question"></input>
+      <button id="add-btn" onClick={handleQuestion}>ask</button>
+
+      <ul id="question-list">
+      </ul>
+      <script src="script.js" defer></script>
     </div>
     
   </div>
